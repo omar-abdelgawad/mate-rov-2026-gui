@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "crab-detection",
+    "information-sheet-problem",
     "paramiko>=4.0.0",
     "pygame>=2.6.1",
     "pyqt5>=5.15.11",
@@ -22,3 +24,7 @@ rov-gui = "rov_gui:main"
 [build-system]
 requires = ["uv_build>=0.11.1,<0.12.0"]
 build-backend = "uv_build"
+
+[tool.uv.sources]
+information-sheet-problem = { git = "https://github.com/ejustroboticsclub/mate-rov-2026-information-sheet-problem", tag = "v3" }
+crab-detection = { git = "https://github.com/ejustroboticsclub/mate-rov-2026-crab-detection", tag = "v4" }
