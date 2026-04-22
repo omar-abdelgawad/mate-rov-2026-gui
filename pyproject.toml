@@ -7,7 +7,14 @@ authors = [
     { name = "omar-abdelgawad", email = "omar.abdelgawad@ejust.edu.eg" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "paramiko>=4.0.0",
+    "pygame>=2.6.1",
+    "pyqt5>=5.15.11",
+    "screeninfo>=0.8.1",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+]
 
 [project.scripts]
 rov-gui = "rov_gui:main"
