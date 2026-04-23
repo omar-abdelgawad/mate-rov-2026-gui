@@ -1,6 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QThread, Qt, QDateTime
+from PyQt5.QtGui import QImage, QPixmap, QIcon
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QSizePolicy, QDialog, QApplication
 import os
 
 from stylesheet import Engineer_buttons_st, back_st
@@ -29,11 +29,11 @@ class infoSheetInputUi(object):
         self.bg_label.setScaledContents(True)
 
         # Back button
-        self.bachBtn = QPushButton(Dialog)
-        self.bachBtn.setGeometry(QRect(scale(10), scale(10), scale(61), scale(41)))
-        self.bachBtn.setStyleSheet(back_st + " color: white;")
-        self.bachBtn.setFont(label_font)
-        self.bachBtn.setText("Back")
+        self.backBtn = QPushButton(Dialog)
+        self.backBtn.setGeometry(QRect(scale(10), scale(10), scale(61), scale(41)))
+        self.backBtn.setStyleSheet(back_st + " color: white;")
+        self.backBtn.setFont(label_font)
+        self.backBtn.setText("Back")
 
         # ===== Longitude =====
         self.long_label = QLabel("Longitude (D° M' S\")", Dialog)

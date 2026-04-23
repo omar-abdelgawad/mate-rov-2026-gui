@@ -74,7 +74,13 @@ class EngineerUi(object):
         self.EdnaButton.setText(QCoreApplication.translate("Dialog", "eDNA", None))
     
     def openDepthEstimation(self):
-        subprocess.run("cd ../length-measurement/build && ./zed_open_capture_depth_tune_stereo", shell=True, check=True)
+        # Resolve path relative to the project root
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        path = os.path.join(base_dir, "length-measurement", "build")
+        if os.path.exists(path):
+            subprocess.run("./zed_open_capture_depth_tune_stereo", cwd=path, shell=True, check=True)
+        else:
+            print(f"Error: Path not found {path}")
 
     def openInformationSheet(self):
         pass

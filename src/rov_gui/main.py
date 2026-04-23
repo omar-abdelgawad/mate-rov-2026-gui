@@ -8,7 +8,8 @@ from engineer import EngineerUi
 from Float import FloatUi
 from crab_detection_gui import CrabDetectionUi
 from utils import VideoCaptureThread, scale, ROSInterface
-from info_sheet_input import infoSheetInputUi #---------------------------------------------------------------
+from info_sheet_input import infoSheetInputUi
+from config import RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -36,7 +37,7 @@ class MainWindow(QMainWindow):
         self.float_ui = FloatUi()
         self.float_ui.setupUi(self.float_page)
 
-        self.co_pilot_ui = CopilotUi("192.168.1.100","pi","pi", self.ros_interface)
+        self.co_pilot_ui = CopilotUi(RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD, self.ros_interface)
         self.co_pilot_ui.setupUi(self.co_pilot_page)
 
         self.engineer_ui = EngineerUi()
@@ -74,7 +75,7 @@ class MainWindow(QMainWindow):
         self.engineer_ui.InformationButton.clicked.connect(self.infoSheet_take_inputs_page) #---------------------------------------------------------------
         self.float_ui.back_button.clicked.connect(self.show_landing_page) 
         self.crab_detection_ui.backBtn.clicked.connect(self.back_from_crab_detection)
-        self.infoSheetInput_ui.bachBtn.clicked.connect(self.show_engineer_page) #---------------------------------------------------------------
+        self.infoSheetInput_ui.backBtn.clicked.connect(self.show_engineer_page) #---------------------------------------------------------------
 
         
         self.video_thread = VideoCaptureThread()
@@ -132,7 +133,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setFont = QFont()
     window = MainWindow()
-    window.setWindowTitle("Mate ROV 2025")
+    window.setWindowTitle("Mate ROV 2026")
     window.resize(scale(930), scale(600))
     window.show()
     sys.exit(app.exec_())

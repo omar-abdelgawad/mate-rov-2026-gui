@@ -1,16 +1,11 @@
-from PyQt5.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PyQt5.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PyQt5.QtWidgets import (QApplication, QDialog, QLabel, QPushButton,
-    QSizePolicy, QWidget)
-
-from stylesheet import Engineer_buttons_st , back_st
+from PyQt5.QtCore import QCoreApplication, QRect, Qt, QMetaObject
+from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
+from PyQt5.QtWidgets import QLabel, QPushButton
+from stylesheet import Engineer_buttons_st, back_st
 import os
-from utils import CameraStreamer , BG_path ,scale  # Added scale import
+from camera_widgets import CameraGrid
+from utils import BG_path, scale
+from config import PILOT_FEEDS
 
 class PilotUi(object):
     def setupUi(self, Dialog):
@@ -54,23 +49,17 @@ class PilotUi(object):
         self.CamButton.setFont(font)
 
 
-        # Change to station's IP
-        ip_pilot = "192.168.1.101"
+        self.camera_grid = None
+        self.CamButton.clicked.connect(self.launch_camera_system)
 
-        # Change to PI's IP
-        ip_rasp = "192.168.1.100"
- 
-        # IPs passed for cameraStreamer class
-        IPS = [
-            f"rtsp://{ip_rasp}:5002/unicast", # Top left (Net)
-            f"rtsp://{ip_rasp}:5001/unicast", # Top right (Side)
-            f"rtsp://{ip_rasp}:5003/unicast", # Bottom left (Gripper)
-            f"rtsp://{ip_rasp}:5004/unicast", # Bottom right (Jelly)
-            f"rtsp://{ip_pilot}:8554/videofeed",  # Middle
-        ]
+    def launch_camera_system(self):
+        if self.camera_grid is None:
+            self.camera_grid = CameraGrid(PILOT_FEEDS)
+            self.camera_grid.setWindowTitle("ROV Camera System")
+            self.camera_grid.resize(scale(1280), scale(720))
         
-        self.camera_6feeds = CameraStreamer(IPS)
-        self.CamButton.clicked.connect(self.camera_6feeds.run)
+        self.camera_grid.show()
+        self.camera_grid.start()
 
         self.setText(Dialog)
         QMetaObject.connectSlotsByName(Dialog)

@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt, QThread
 from PyQt5.QtGui import QIcon, QPixmap , QFont ,QFontDatabase
 from PyQt5.QtWidgets import QLabel, QPushButton , QSlider , QComboBox, QHBoxLayout, QVBoxLayout, QLineEdit
+from config import RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD, CAM_PORTS
 from utils import create_ssh_client, send_command, reset_cameras, scale
 from std_msgs.msg import Int8
 import os
@@ -10,13 +11,7 @@ from utils import reconnect_command, terminal_execute
 
 
 
-CAM_PORTS = {
-    "Side": ["/dev/video4", "rtsp://192.168.1.100:5001/unicast"],
-    "Net": ["/dev/video2", "rtsp://192.168.1.100:5002/unicast"],
-    "Jelly": ["/dev/video6", "rtsp://192.168.1.100:5004/unicast"],
-    "Gripper": ["/dev/video8", "rtsp://192.168.1.100:5003/unicast"],
-    "ZED": ["/dev/video0", "rtsp://192.168.1.100:8554/unicast"]
-}    
+# CAM_PORTS now imported from config
     
 
 class RestreamThread(QThread):
@@ -225,7 +220,7 @@ class CopilotUi(object):
         self.jellyfish_button.setGeometry(QRect(scale(800), scale(400), scale(120), scale(41)))
         self.jellyfish_button.setStyleSheet(red_button)
         self.jellyfish_button.setFont(button_font)
-        self.jellyfish_button.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=4)))
+        # self.jellyfish_button.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=4)))
         
 
         self.jellyfish_indicator_status = QLabel(Dialog)
@@ -308,10 +303,10 @@ class CopilotUi(object):
         self.reset_button.setGeometry(QRect(scale(20), scale(550), scale(120), scale(41)))
 
         # Connect buttons to ROS publishing functions
-        self.button0.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=0)))
-        self.button1.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=1)))
-        self.button2.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=2)))
-        self.reset_button.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=3))) # This actually reset the whole system not the pump
+        # self.button0.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=0)))
+        # self.button1.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=1)))
+        # self.button2.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=2)))
+        # self.reset_button.clicked.connect(lambda: self.ros_interface.pumb_publisher.publish(Int8(data=3))) # This actually reset the whole system not the pump
 
 
         # Command input field

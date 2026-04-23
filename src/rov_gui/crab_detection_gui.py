@@ -1,9 +1,9 @@
 import os
 import cv2
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QThread, Qt, QDateTime
+from PyQt5.QtGui import QImage, QPixmap, QIcon
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QSizePolicy, QDialog, QApplication
 
 from crab_detection.crab_detector import CrabDetector # from pkg 
 from stylesheet import back_st, selection_st
