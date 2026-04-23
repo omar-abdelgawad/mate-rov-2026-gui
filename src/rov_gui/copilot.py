@@ -5,13 +5,10 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QSlider,
     QComboBox,
-    QHBoxLayout,
-    QVBoxLayout,
     QLineEdit,
 )
-from config import RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD, CAM_PORTS
+from config import CAM_PORTS
 from utils import create_ssh_client, send_command, reset_cameras, scale
-from std_msgs.msg import Int8
 import os
 from utils import BG_path, ROV_path
 from stylesheet import (
@@ -21,8 +18,6 @@ from stylesheet import (
     red_button,
     back_st,
     selection_st,
-    Laning_buttons_st,
-    Engineer_buttons_st,
 )
 from utils import reconnect_command, terminal_execute
 

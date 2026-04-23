@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QPushButton
 import os
 import subprocess
-from stylesheet import Engineer_buttons_st, red_button, back_st
+from stylesheet import Engineer_buttons_st, back_st
 from utils import BG_path, scale
 
 

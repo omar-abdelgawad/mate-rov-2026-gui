@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QCoreApplication, QRect, Qt, QMetaObject
+from PyQt5.QtCore import QCoreApplication, QRect, QMetaObject
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QPushButton
 from stylesheet import Engineer_buttons_st, back_st

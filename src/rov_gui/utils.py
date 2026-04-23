@@ -1,10 +1,7 @@
 import cv2
 from PyQt5.QtCore import QThread, pyqtSignal
-import numpy as np
 import os
-from multiprocessing import Process, Array
 from screeninfo import get_monitors
-import time
 from functools import lru_cache
 from gui_backend import start_ros
 

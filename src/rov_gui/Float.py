@@ -1,7 +1,7 @@
-from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt
+from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
-from PyQt5.QtWidgets import QLabel, QPushButton, QSlider, QComboBox, QFrame
-from stylesheet import Copilot_st1, Copilot_st2, float_st, back_st, Engineer_buttons_st
+from PyQt5.QtWidgets import QLabel, QPushButton, QFrame
+from stylesheet import Copilot_st1, Copilot_st2, float_st, back_st
 import os
 from utils import BG_path, scale
 

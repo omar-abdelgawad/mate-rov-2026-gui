@@ -1,8 +1,7 @@
 import cv2
-import numpy as np
-from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
 
 
 class CameraFeed(QThread):

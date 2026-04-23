@@ -1,14 +1,9 @@
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QThread, Qt, QDateTime
-from PyQt5.QtGui import QImage, QPixmap, QIcon
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
     QVBoxLayout,
-    QHBoxLayout,
     QPushButton,
     QLabel,
-    QComboBox,
-    QSizePolicy,
     QDialog,
-    QApplication,
 )
 import os
 
