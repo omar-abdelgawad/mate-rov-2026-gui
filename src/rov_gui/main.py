@@ -1,15 +1,14 @@
-import cv2
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QDialog
 from PyQt5.QtGui import QFont
 from landingPage import LandingPageUi
 from pilot import PilotUi
-from copilot import CopilotUi, CAM_PORTS
+from copilot import CopilotUi
 from engineer import EngineerUi
 from Float import FloatUi
-from Crab_Detection import CrabDetectionUi
+from crab_detection_gui import CrabDetectionUi
 from utils import VideoCaptureThread, scale, ROSInterface
-from infoSheetInput import infoSheetInputUi #---------------------------------------------------------------
+from info_sheet_input import infoSheetInputUi #---------------------------------------------------------------
 
 class MainWindow(QMainWindow):
     def __init__(self):
