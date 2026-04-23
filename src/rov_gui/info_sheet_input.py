@@ -1,9 +1,13 @@
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QRect, QMetaObject, QCoreApplication
+from PyQt5.QtGui import QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import (
     QVBoxLayout,
     QPushButton,
     QLabel,
     QDialog,
+    QLineEdit,
+    QTableWidget,
+    QTableWidgetItem,
 )
 import os
 
@@ -26,7 +30,6 @@ class infoSheetInputUi(object):
 
         title_font = QFont(families[0], 18)
         label_font = QFont(families[0], 14)
-        input_font = QFont(families[0], 12)
 
         # Background
         self.bg_label = QLabel(Dialog)

@@ -98,7 +98,7 @@ class CameraGrid(QWidget):
                 feed = CameraFeed(url, width=480, height=270)
 
             feed.frame_signal.connect(
-                lambda img, l=label: l.setPixmap(QPixmap.fromImage(img))
+                lambda img, lbl=label: lbl.setPixmap(QPixmap.fromImage(img))
             )
             self.feeds.append(feed)
             self.labels.append(label)

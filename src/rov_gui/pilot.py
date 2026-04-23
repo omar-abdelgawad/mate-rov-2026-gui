@@ -51,6 +51,8 @@ class PilotUi(object):
 
         self.camera_grid = None
         self.CamButton.clicked.connect(self.launch_camera_system)
+        self.setText(Dialog)
+        QMetaObject.connectSlotsByName(Dialog)
 
     def launch_camera_system(self):
         if self.camera_grid is None:
@@ -60,9 +62,6 @@ class PilotUi(object):
 
         self.camera_grid.show()
         self.camera_grid.start()
-
-        self.setText(Dialog)
-        QMetaObject.connectSlotsByName(Dialog)
 
     def setText(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Dialog", None))

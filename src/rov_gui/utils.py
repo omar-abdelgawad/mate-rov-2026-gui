@@ -76,12 +76,12 @@ class CameraStreamer(QThread):
 
 def create_ssh_client(ip, username, password):
     return None
-    client = paramiko.SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(ip, username=username, password=password)
-    print(f"Connected to {ip} as {username}")
-    return client
+    # client = paramiko.SSHClient()
+    # client.load_system_host_keys()
+    # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    # client.connect(ip, username=username, password=password)
+    # print(f"Connected to {ip} as {username}")
+    # return client
 
 
 def terminal_execute(client, command):
