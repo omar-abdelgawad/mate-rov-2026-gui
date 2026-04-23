@@ -5,8 +5,14 @@ default:
 run_gui:
   cd src/rov_gui && python main.py
 
-test_mobile_rtsp:
-  python ./scripts/test_gstreamer_mobile.py
+test_mobile_rtsp ip="" port="":
+  python ./scripts/test_gstreamer_mobile.py {{ip}} {{port}}
+
+test_mobile_rtsp_2 ip="" port="":
+  python ./scripts/test_gstreamer_mobile_2.py {{ip}} {{port}}
+
+test_gui_mobile +rtsp_urls="rtsp://192.168.1.15:8080/h264_ulaw.sdp":
+  cd src/rov_gui && python main.py --mobile-rtsp {{rtsp_urls}}
 
 fmt:
   uvx ruff format src
