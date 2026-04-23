@@ -2,6 +2,7 @@ import cv2
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QGridLayout, QLabel
+import time
 
 
 class CameraFeed(QThread):
@@ -31,8 +32,13 @@ class CameraFeed(QThread):
 
             while self.running and cap.isOpened():
                 ret, frame = cap.read()
+
                 if not ret:
-                    break
+                    cap.release()
+                    cv2.destroyAllWindows()
+                    time.sleep(1)
+                    cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+                    continue
 
                 # Resize and convert to QImage
                 frame = cv2.resize(frame, (self.width, self.height))
