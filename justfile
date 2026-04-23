@@ -1,3 +1,4 @@
+# note that you always have to source your environment before running any command 
 # lists recipes
 default:
   just --list
@@ -29,3 +30,10 @@ lint-fix:
 clean mode="dry":
     git clean -fxfd -e '*venv' -e '.env' {{ if mode == "force" { "" } else { "--dry-run" } }}
 
+[doc('Run the standalone joystick node manually')]
+run_joystick:
+  python ./scripts/joystick.py
+
+[doc('Run the standalone joystick 3D visualizer')]
+run_joystick_visualizer:
+  python ./scripts/joystick_visualizer.py
