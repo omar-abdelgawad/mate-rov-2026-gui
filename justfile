@@ -33,7 +33,3 @@ clean mode="dry":
 [doc('Run the standalone joystick node manually')]
 run_joystick:
   python ./scripts/joystick.py
-
-[doc('Run the standalone joystick 3D visualizer')]
-run_joystick_visualizer:
-  python ./scripts/joystick_visualizer.py

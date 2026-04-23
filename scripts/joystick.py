@@ -16,6 +16,7 @@ try:
     import pygame
 except ImportError:
     pygame = None
+import sys
 import time
 
 from pysticks import get_controller
@@ -35,6 +36,26 @@ RESET_ATTITUDE_BUTTON = 1
 def clamp(value: float, lower: float, upper: float) -> float:
     return max(lower, min(upper, value))
 
+def render_bar(val: float, max_val: float, half_width: int = 10) -> str:
+    """Returns a string bar rendering the value, e.g. [      ████|          ]"""
+    try:
+        ratio = clamp(val / max_val, -1.0, 1.0)
+    except ZeroDivisionError:
+        ratio = 0.0
+        
+    bars = int(abs(ratio) * half_width)
+    spaces = half_width - bars
+    
+    if ratio < -0.05:
+        # Avoid zero-width bar formatting issues
+        bar_str = '█' * max(0, bars - 1) + '▌' if bars > 0 else '▌'
+        return f"[{' ' * spaces}{bar_str}|{' ' * half_width}]"
+    elif ratio > 0.05:
+        bar_str = '▐' + '█' * max(0, bars - 1) if bars > 0 else '▐'
+        return f"[{' ' * half_width}|{bar_str}{' ' * spaces}]"
+    else:
+        return f"[{' ' * half_width}│{' ' * half_width}]"
+
 
 class JoyStickNode(Node):
     def __init__(self):
@@ -53,6 +74,9 @@ class JoyStickNode(Node):
 
         # Timer (only started if controller is present)
         self.timer = self.create_timer(0.01, self.update)
+        
+        # TUI Display Timer (updates 10x per second to avoid terminal flicker)
+        self.tui_timer = self.create_timer(0.1, self.render_tui)
 
         # Message state
         self.twist_msg = Twist()
@@ -68,6 +92,52 @@ class JoyStickNode(Node):
         # Control state
         self.prev_reset = False
         self.last_update_time = time.time()
+        self.first_render = True
+
+    def render_tui(self):
+        """Renders the minimal terminal UI showing current controller state."""
+        # Using ANSI escape codes to clear screen and reposition cursor
+        if self.first_render:
+            sys.stdout.write('\033[2J')
+            self.first_render = False
+            
+        sys.stdout.write('\033[H')  # Move cursor to top left
+        
+        lin_x = self.twist_msg.linear.x
+        lin_y = self.twist_msg.linear.y
+        lin_z = self.twist_msg.linear.z
+        
+        ang_x = self.twist_msg.angular.x
+        ang_y = self.twist_msg.angular.y
+        ang_z = self.twist_msg.angular.z
+        
+        grip_l = "[CLOSED]" if self.gripper_l_msg.data else "[OPEN]  "
+        grip_r = "[CLOSED]" if self.gripper_r_msg.data else "[OPEN]  "
+        
+        lines = [
+            "╔═══════════════════ ROV JOYSTICK TELEMETRY ═══════════════════╗",
+            "║                                                              ║",
+            "║  [ Linear Velocity Cmd ]                                     ║",
+            f"║  Vx (Fwd/Rev):  {lin_x:+5.2f}  {render_bar(lin_x, 1.0, 12)}       ║",
+            f"║  Vy (Strafe) :  {lin_y:+5.2f}  {render_bar(lin_y, 1.0, 12)}       ║",
+            f"║  Vz (Depth)  :  {lin_z:+5.2f}  {render_bar(lin_z, DEPTH_STEP, 12)}       ║",
+            "║                                                              ║",
+            "║  [ Angular Rate Cmd ]                                        ║",
+            f"║  Wx (Roll)   :  {ang_x:+5.2f}  {render_bar(ang_x, ROLL_RATE, 12)}       ║",
+            f"║  Wy (Pitch)  :  {ang_y:+5.2f}  {render_bar(ang_y, PITCH_RATE, 12)}       ║",
+            f"║  Wz (Yaw)    :  {ang_z:+5.2f}  {render_bar(ang_z, YAW_RATE, 12)}       ║",
+            "║                                                              ║",
+            "║  [ Actuators ]                                               ║",
+            f"║  Gripper L   : {grip_l}     Gripper R   : {grip_r}           ║",
+            "║                                                              ║",
+            "╚══════════════════════════════════════════════════════════════╝"
+        ]
+        
+        # Ensure we pad empty lines after TUI to overwrite any terminal garbage
+        lines.extend([""] * 3) 
+        
+        sys.stdout.write("\n".join(lines) + "\n")
+        sys.stdout.flush()
 
     def update(self):
         """Main control loop — called every 10ms by the timer."""
