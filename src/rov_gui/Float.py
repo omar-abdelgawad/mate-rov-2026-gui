@@ -5,18 +5,19 @@ from stylesheet import Copilot_st1, Copilot_st2, float_st, back_st, Engineer_but
 import os
 from utils import BG_path, scale
 
+
 class FloatUi(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(scale(930), scale(599))  # Scaled window size
-        
+
         # Loading font
         script_dir = os.path.dirname(os.path.abspath(__file__))
         font_path = os.path.join(script_dir, "GillSans.ttf")
         id = QFontDatabase.addApplicationFont(font_path)
         if id == -1:
             print("Failed to load font!")
-        
+
         families = QFontDatabase.applicationFontFamilies(id)
         # Scaled fonts
         font = QFont(families[0], 13)
@@ -35,13 +36,13 @@ class FloatUi(object):
         self.Dlabel.setStyleSheet(Copilot_st2)
 
         self.MainLine = QFrame(Dialog)
-        self.MainLine.setObjectName(u"line_3")
+        self.MainLine.setObjectName("line_3")
         self.MainLine.setGeometry(QRect(scale(380), scale(60), scale(151), scale(461)))
         self.MainLine.setFrameShape(QFrame.Shape.VLine)
         self.MainLine.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.DT = QLabel(Dialog)
-        self.DT.setObjectName(u"label_3")
+        self.DT.setObjectName("label_3")
         self.DT.setGeometry(QRect(scale(350), scale(10), scale(201), scale(41)))
         self.DT.setStyleSheet(Copilot_st1)
         self.DT.setFont(Afont)
@@ -53,13 +54,13 @@ class FloatUi(object):
         self.time.setFont(font)
 
         self.depth = QLabel(Dialog)
-        self.depth.setObjectName(u"label_5")
+        self.depth.setObjectName("label_5")
         self.depth.setGeometry(QRect(scale(540), scale(50), scale(101), scale(41)))
         self.depth.setStyleSheet(Copilot_st1)
         self.depth.setFont(font)
 
         self.line_1 = QFrame(Dialog)
-        self.line_1.setObjectName(u"line_2")
+        self.line_1.setObjectName("line_2")
         self.line_1.setGeometry(QRect(scale(210), scale(100), scale(511), scale(20)))
         self.line_1.setFrameShape(QFrame.Shape.HLine)
         self.line_1.setFrameShadow(QFrame.Shadow.Sunken)
@@ -74,16 +75,18 @@ class FloatUi(object):
 
         self.depth_labels = []
         self.current_index = 0
-        
+
         y_position = scale(110)
         for i in range(1, 11):
             time_var = 1
-            
+
             t_label = QLabel(Dialog)
             t_label.setObjectName(f"time label_{6 + 2 * i}")
             t_label.setGeometry(QRect(scale(300), y_position, scale(31), scale(31)))
             t_label.setStyleSheet(float_st)
-            t_label.setText(QCoreApplication.translate("Dialog", f"{time_var*i}s", None))
+            t_label.setText(
+                QCoreApplication.translate("Dialog", f"{time_var * i}s", None)
+            )
 
             d_label = QLabel(Dialog)
             d_label.setObjectName(f"depth label_{7 + 2 * i}")
@@ -95,7 +98,9 @@ class FloatUi(object):
 
             line = QFrame(Dialog)
             line.setObjectName(f"line_{i}")
-            line.setGeometry(QRect(scale(210), y_position + scale(30), scale(511), scale(20)))
+            line.setGeometry(
+                QRect(scale(210), y_position + scale(30), scale(511), scale(20))
+            )
             line.setFrameShape(QFrame.Shape.HLine)
             line.setFrameShadow(QFrame.Shadow.Sunken)
             y_position += scale(40)  # Scaled increment
@@ -103,21 +108,19 @@ class FloatUi(object):
         self.setText(Dialog)
         QMetaObject.connectSlotsByName(Dialog)
 
-
     def setText(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Dialog", None))
         self.Bg_label.setText("")
         self.Dlabel.setText("")
         self.DT.setText(QCoreApplication.translate("Dialog", "   Depth Tracker", None))
         self.time.setText(QCoreApplication.translate("Dialog", "Time", None))
-        self.depth.setText(QCoreApplication.translate("Dialog","Depth ", None))
+        self.depth.setText(QCoreApplication.translate("Dialog", "Depth ", None))
         self.back_button.setText(QCoreApplication.translate("Dialog", "Back", None))
-    
+
     def update_float(self, depth_value):
-        
+
         if self.current_index < len(self.depth_labels):
-            
             self.depth_labels[self.current_index].setText(f"{depth_value:.2f}m")
             self.current_index += 1
-        else:   
+        else:
             print("All labels have been updated.")

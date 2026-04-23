@@ -6,6 +6,7 @@ import subprocess
 from stylesheet import Engineer_buttons_st, red_button, back_st
 from utils import BG_path, scale
 
+
 class EngineerUi(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -15,7 +16,7 @@ class EngineerUi(object):
         font_path = os.path.join(script_dir, "GillSans.ttf")
         id = QFontDatabase.addApplicationFont(font_path)
         families = QFontDatabase.applicationFontFamilies(id)
-        
+
         font = QFont(families[0], 18)
         Afont = QFont(families[0], 14)
         ICCfont = QFont(families[0], 17)
@@ -36,7 +37,9 @@ class EngineerUi(object):
 
         self.DepthButton = QPushButton(Dialog)
         self.DepthButton.setObjectName("Depth Estimation Button")
-        self.DepthButton.setGeometry(QRect(scale(290), scale(100), scale(351), scale(81)))
+        self.DepthButton.setGeometry(
+            QRect(scale(290), scale(100), scale(351), scale(81))
+        )
         self.DepthButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.DepthButton.setFont(font)
         self.DepthButton.clicked.connect(self.openDepthEstimation)
@@ -49,14 +52,18 @@ class EngineerUi(object):
 
         self.InformationButton = QPushButton(Dialog)
         self.InformationButton.setObjectName("Information Sheet Button")
-        self.InformationButton.setGeometry(QRect(scale(290), scale(280), scale(351), scale(81)))
+        self.InformationButton.setGeometry(
+            QRect(scale(290), scale(280), scale(351), scale(81))
+        )
         self.InformationButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.InformationButton.setFont(ICCfont)
         self.InformationButton.clicked.connect(self.openInformationSheet)
 
         self.EdnaButton = QPushButton(Dialog)
         self.EdnaButton.setObjectName("Edna Button")
-        self.EdnaButton.setGeometry(QRect(scale(290), scale(370), scale(351), scale(81)))
+        self.EdnaButton.setGeometry(
+            QRect(scale(290), scale(370), scale(351), scale(81))
+        )
         self.EdnaButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.EdnaButton.setFont(font)
         self.EdnaButton.clicked.connect(self.openEdna)
@@ -68,17 +75,27 @@ class EngineerUi(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Dialog", None))
         self.Bg_label.setText("")
         self.BackButton.setText(QCoreApplication.translate("Dialog", "Back", None))
-        self.DepthButton.setText(QCoreApplication.translate("Dialog", "Depth Estimation", None))
-        self.IccButton.setText(QCoreApplication.translate("Dialog", "Crab Detection", None))
-        self.InformationButton.setText(QCoreApplication.translate("Dialog", "Information Sheet", None))
+        self.DepthButton.setText(
+            QCoreApplication.translate("Dialog", "Depth Estimation", None)
+        )
+        self.IccButton.setText(
+            QCoreApplication.translate("Dialog", "Crab Detection", None)
+        )
+        self.InformationButton.setText(
+            QCoreApplication.translate("Dialog", "Information Sheet", None)
+        )
         self.EdnaButton.setText(QCoreApplication.translate("Dialog", "eDNA", None))
-    
+
     def openDepthEstimation(self):
         # Resolve path relative to the project root
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        base_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         path = os.path.join(base_dir, "length-measurement", "build")
         if os.path.exists(path):
-            subprocess.run("./zed_open_capture_depth_tune_stereo", cwd=path, shell=True, check=True)
+            subprocess.run(
+                "./zed_open_capture_depth_tune_stereo", cwd=path, shell=True, check=True
+            )
         else:
             print(f"Error: Path not found {path}")
 

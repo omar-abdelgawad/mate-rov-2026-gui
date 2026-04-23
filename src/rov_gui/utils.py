@@ -72,6 +72,8 @@ class VideoCaptureThread(QThread):
 class CameraStreamer(QThread):
     def __init__(self, ips):
         super().__init__()
+
+
 # CameraStreamer class removed. Replaced by camera_widgets.py
 
 

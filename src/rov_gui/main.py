@@ -11,10 +11,11 @@ from utils import VideoCaptureThread, scale, ROSInterface
 from info_sheet_input import infoSheetInputUi
 from config import RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        #add the ip , username,password as args in line 34 and unhash line 24 in copilot.py 
+        # add the ip , username,password as args in line 34 and unhash line 24 in copilot.py
         # I Used stacked widget here for navigatROSInterface()ion between pages
         self.ros_interface = ROSInterface().node
         self.stacked_widget = QStackedWidget()
@@ -25,11 +26,15 @@ class MainWindow(QMainWindow):
         self.engineer_page = QDialog()
         self.float_page = QDialog()
         self.crab_detection_page = QDialog()
-        self.infoSheetInput_page = QDialog() #---------------------------------------------------------------
-        self.infoSheetOutput_page = QDialog() #---------------------------------------------------------------
+        self.infoSheetInput_page = (
+            QDialog()
+        )  # ---------------------------------------------------------------
+        self.infoSheetOutput_page = (
+            QDialog()
+        )  # ---------------------------------------------------------------
         # code for Setting up the UI for each page
         self.landing_page_ui = LandingPageUi()
-        self.landing_page_ui.setupUi(self.landing_page) 
+        self.landing_page_ui.setupUi(self.landing_page)
 
         self.pilot_ui = PilotUi()
         self.pilot_ui.setupUi(self.pilot_page)
@@ -37,7 +42,9 @@ class MainWindow(QMainWindow):
         self.float_ui = FloatUi()
         self.float_ui.setupUi(self.float_page)
 
-        self.co_pilot_ui = CopilotUi(RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD, self.ros_interface)
+        self.co_pilot_ui = CopilotUi(
+            RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD, self.ros_interface
+        )
         self.co_pilot_ui.setupUi(self.co_pilot_page)
 
         self.engineer_ui = EngineerUi()
@@ -46,43 +53,46 @@ class MainWindow(QMainWindow):
         self.crab_detection_ui = CrabDetectionUi()
         self.crab_detection_ui.setupUI(self.crab_detection_page, start_thread=False)
 
-        self.infoSheetInput_ui = infoSheetInputUi() #---------------------------------------------------------------
+        self.infoSheetInput_ui = (
+            infoSheetInputUi()
+        )  # ---------------------------------------------------------------
         self.infoSheetInput_ui.setupUi(self.infoSheetInput_page)
         # self.infoSheetOutput_ui = infoSheetOutputUi() #---------------------------------------------------------------
 
-        
         self.stacked_widget.addWidget(self.landing_page)
         self.stacked_widget.addWidget(self.pilot_page)
         self.stacked_widget.addWidget(self.co_pilot_page)
         self.stacked_widget.addWidget(self.engineer_page)
         self.stacked_widget.addWidget(self.float_page)
         self.stacked_widget.addWidget(self.crab_detection_page)
-        self.stacked_widget.addWidget(self.infoSheetInput_page) #---------------------------------------------------------------
+        self.stacked_widget.addWidget(
+            self.infoSheetInput_page
+        )  # ---------------------------------------------------------------
         # self.stacked_widget.addWidget(self.infoSheetOuput_page) #---------------------------------------------------------------
 
         self.setCentralWidget(self.stacked_widget)
 
-        
         self.landing_page_ui.PilotButton.clicked.connect(self.show_pilot_page)
         self.landing_page_ui.CoButton.clicked.connect(self.show_co_pilot_page)
         self.landing_page_ui.EngButton.clicked.connect(self.show_engineer_page)
         self.landing_page_ui.FloatButton.clicked.connect(self.show_float_page)
-        
+
         self.pilot_ui.BackButton.clicked.connect(self.show_landing_page)
         self.co_pilot_ui.back_button.clicked.connect(self.show_landing_page)
         self.engineer_ui.BackButton.clicked.connect(self.show_landing_page)
         self.engineer_ui.IccButton.clicked.connect(self.show_crab_detection_page)
-        self.engineer_ui.InformationButton.clicked.connect(self.infoSheet_take_inputs_page) #---------------------------------------------------------------
-        self.float_ui.back_button.clicked.connect(self.show_landing_page) 
+        self.engineer_ui.InformationButton.clicked.connect(
+            self.infoSheet_take_inputs_page
+        )  # ---------------------------------------------------------------
+        self.float_ui.back_button.clicked.connect(self.show_landing_page)
         self.crab_detection_ui.backBtn.clicked.connect(self.back_from_crab_detection)
-        self.infoSheetInput_ui.backBtn.clicked.connect(self.show_engineer_page) #---------------------------------------------------------------
+        self.infoSheetInput_ui.backBtn.clicked.connect(
+            self.show_engineer_page
+        )  # ---------------------------------------------------------------
 
-        
         self.video_thread = VideoCaptureThread()
 
-
         self._connect_ros_signals()
-
 
     def show_landing_page(self):
         self.stacked_widget.setCurrentWidget(self.landing_page)
@@ -110,7 +120,9 @@ class MainWindow(QMainWindow):
         self.crab_detection_ui.start_thread()
         self.stacked_widget.setCurrentWidget(self.crab_detection_page)
 
-    def infoSheet_take_inputs_page(self): #---------------------------------------------------------------
+    def infoSheet_take_inputs_page(
+        self,
+    ):  # ---------------------------------------------------------------
         self.stacked_widget.setCurrentWidget(self.infoSheetInput_page)
 
     def back_from_crab_detection(self):
@@ -120,14 +132,31 @@ class MainWindow(QMainWindow):
 
     def _connect_ros_signals(self):
         """Connect ROS signals to UI updates"""
-        self.ros_interface.signal_emitter.depth_signal.connect(self.co_pilot_ui.update_actual_depth)
-        self.ros_interface.signal_emitter.gripper_r_signal.connect(self.co_pilot_ui.update_gripper_r)
-        self.ros_interface.signal_emitter.gripper_l_signal.connect(self.co_pilot_ui.update_gripper_l)
-        self.ros_interface.signal_emitter.thrusters_signal.connect(self.co_pilot_ui.update_thrusters)
-        self.ros_interface.signal_emitter.imu_signal.connect(self.co_pilot_ui.update_imu)
-        self.ros_interface.signal_emitter.indicators_signal.connect(self.co_pilot_ui.update_indicators)
-        self.ros_interface.signal_emitter.desired_signal.connect(self.co_pilot_ui.update_desired_values)
-        self.ros_interface.signal_emitter.angles_signal.connect(self.co_pilot_ui.update_angles)
+        self.ros_interface.signal_emitter.depth_signal.connect(
+            self.co_pilot_ui.update_actual_depth
+        )
+        self.ros_interface.signal_emitter.gripper_r_signal.connect(
+            self.co_pilot_ui.update_gripper_r
+        )
+        self.ros_interface.signal_emitter.gripper_l_signal.connect(
+            self.co_pilot_ui.update_gripper_l
+        )
+        self.ros_interface.signal_emitter.thrusters_signal.connect(
+            self.co_pilot_ui.update_thrusters
+        )
+        self.ros_interface.signal_emitter.imu_signal.connect(
+            self.co_pilot_ui.update_imu
+        )
+        self.ros_interface.signal_emitter.indicators_signal.connect(
+            self.co_pilot_ui.update_indicators
+        )
+        self.ros_interface.signal_emitter.desired_signal.connect(
+            self.co_pilot_ui.update_desired_values
+        )
+        self.ros_interface.signal_emitter.angles_signal.connect(
+            self.co_pilot_ui.update_angles
+        )
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

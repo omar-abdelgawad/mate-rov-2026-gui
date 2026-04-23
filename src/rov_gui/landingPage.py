@@ -1,16 +1,16 @@
-from PyQt5.QtCore import (QCoreApplication, QRect, QSize,QMetaObject)
-from PyQt5.QtGui import (QIcon, QPixmap)
-from PyQt5.QtWidgets import (QLabel, QPushButton)
+from PyQt5.QtCore import QCoreApplication, QRect, QSize, QMetaObject
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QLabel, QPushButton
 
 from stylesheet import Laning_buttons_st
-from utils import BG_path ,copilot_path,pilot_path,engineer_path,float_path , scale
+from utils import BG_path, copilot_path, pilot_path, engineer_path, float_path, scale
 
 
 class LandingPageUi(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(scale(930), scale(599))
-        
+
         # Background
         self.Bg_label = QLabel(Dialog)
         self.Bg_label.setObjectName("BG label")
@@ -21,7 +21,9 @@ class LandingPageUi(object):
         # Pilot button
         self.PilotButton = QPushButton(Dialog)
         self.PilotButton.setObjectName("Pilot Button")
-        self.PilotButton.setGeometry(QRect(scale(240), scale(100), scale(201), scale(201)))
+        self.PilotButton.setGeometry(
+            QRect(scale(240), scale(100), scale(201), scale(201))
+        )
         self.PilotButton.setStyleSheet(Laning_buttons_st)
         icon = QIcon()
         icon.addFile(pilot_path, QSize(), QIcon.Normal, QIcon.Off)
@@ -41,7 +43,9 @@ class LandingPageUi(object):
         # Engineer button
         self.EngButton = QPushButton(Dialog)
         self.EngButton.setObjectName("Enginner Button")
-        self.EngButton.setGeometry(QRect(scale(240), scale(330), scale(201), scale(191)))
+        self.EngButton.setGeometry(
+            QRect(scale(240), scale(330), scale(201), scale(191))
+        )
         self.EngButton.setStyleSheet(Laning_buttons_st)
         icon2 = QIcon()
         icon2.addFile(engineer_path, QSize(), QIcon.Normal, QIcon.Off)
@@ -51,7 +55,9 @@ class LandingPageUi(object):
         # Float button
         self.FloatButton = QPushButton(Dialog)
         self.FloatButton.setObjectName("Float Button")
-        self.FloatButton.setGeometry(QRect(scale(489), scale(331), scale(201), scale(191)))
+        self.FloatButton.setGeometry(
+            QRect(scale(489), scale(331), scale(201), scale(191))
+        )
         self.FloatButton.setStyleSheet(Laning_buttons_st)
         icon3 = QIcon()
         icon3.addFile(float_path, QSize(), QIcon.Normal, QIcon.Off)

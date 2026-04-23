@@ -1,12 +1,23 @@
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QThread, Qt, QDateTime
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QSizePolicy, QDialog, QApplication
+from PyQt5.QtWidgets import (
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QLabel,
+    QComboBox,
+    QSizePolicy,
+    QDialog,
+    QApplication,
+)
 import os
 
 from stylesheet import Engineer_buttons_st, back_st
 from utils import BG_path, scale
+
 # from information_sheet_problem import run_analysis
 run_analysis = None
+
 
 class infoSheetInputUi(object):
     def setupUi(self, Dialog):
@@ -71,21 +82,29 @@ class infoSheetInputUi(object):
 
         # ===== Keel Depth =====
         self.depth_label = QLabel("Keel Depth", Dialog)
-        self.depth_label.setGeometry(QRect(scale(100), scale(300), scale(200), scale(30)))
+        self.depth_label.setGeometry(
+            QRect(scale(100), scale(300), scale(200), scale(30))
+        )
         self.depth_label.setFont(label_font)
 
         self.depth_input = QLineEdit(Dialog)
         self.depth_input.setPlaceholderText("Meters")
-        self.depth_input.setGeometry(QRect(scale(100), scale(340), scale(150), scale(40)))
+        self.depth_input.setGeometry(
+            QRect(scale(100), scale(340), scale(150), scale(40))
+        )
 
         # ===== Heading =====
         self.heading_label = QLabel("Heading (°)", Dialog)
-        self.heading_label.setGeometry(QRect(scale(100), scale(400), scale(200), scale(30)))
+        self.heading_label.setGeometry(
+            QRect(scale(100), scale(400), scale(200), scale(30))
+        )
         self.heading_label.setFont(label_font)
 
         self.heading_input = QLineEdit(Dialog)
         self.heading_input.setPlaceholderText("Degrees")
-        self.heading_input.setGeometry(QRect(scale(100), scale(440), scale(150), scale(40)))
+        self.heading_input.setGeometry(
+            QRect(scale(100), scale(440), scale(150), scale(40))
+        )
 
         # ===== Submit Button =====
         self.submitBtn = QPushButton("Save", Dialog)
@@ -100,24 +119,22 @@ class infoSheetInputUi(object):
         self.submitBtn.clicked.connect(self.collect_values)
 
     def setText(self, Dialog):
-        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Info Sheet Input", None))
+        Dialog.setWindowTitle(
+            QCoreApplication.translate("Dialog", "Info Sheet Input", None)
+        )
 
     def dms_to_float(self, deg, minute, sec):
-        value = float(deg) + float(minute)/60 + float(sec)/3600
+        value = float(deg) + float(minute) / 60 + float(sec) / 3600
         return round(value, 4)
 
     def collect_values(self):
         try:
             self.longitude = self.dms_to_float(
-                self.long_deg.text(),
-                self.long_min.text(),
-                self.long_sec.text()
+                self.long_deg.text(), self.long_min.text(), self.long_sec.text()
             )
 
             self.latitude = self.dms_to_float(
-                self.lat_deg.text(),
-                self.lat_min.text(),
-                self.lat_sec.text()
+                self.lat_deg.text(), self.lat_min.text(), self.lat_sec.text()
             )
 
             self.keel_depth = round(float(self.depth_input.text()), 4)
@@ -136,6 +153,7 @@ class infoSheetInputUi(object):
 
         except ValueError:
             print("Invalid input!")
+
     def show_results_dialog(self, result):
         dialog = QDialog()
         dialog.setWindowTitle("Analysis Results")
@@ -147,11 +165,7 @@ class infoSheetInputUi(object):
         table.setRowCount(len(result.results))
         table.setColumnCount(3)
 
-        table.setHorizontalHeaderLabels([
-            "Platform",
-            "Surface Threat",
-            "Subsea Threat"
-        ])
+        table.setHorizontalHeaderLabels(["Platform", "Surface Threat", "Subsea Threat"])
 
         for row, r in enumerate(result.results):
             table.setItem(row, 0, QTableWidgetItem(r.platform.name))

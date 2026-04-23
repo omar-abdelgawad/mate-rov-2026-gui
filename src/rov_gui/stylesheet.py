@@ -1,4 +1,4 @@
-#This is the CSS code for each stylesheet i made & used
+# This is the CSS code for each stylesheet i made & used
 
 Laning_buttons_st = """
 QPushButton {
@@ -20,7 +20,7 @@ QPushButton:pressed {
     border-color: #3498DB; 
 }
 """
-Engineer_buttons_st= """
+Engineer_buttons_st = """
 QPushButton {
     background-color: #2980B9;
     color: white; 
@@ -62,7 +62,7 @@ QLabel:focus {
     background-color: rgb(43, 45, 56);
 }
 """
-Copilot_st2= """
+Copilot_st2 = """
 QLabel {
     border: 2px solid rgb(37, 39, 48);
     border-radius: 20px;
@@ -105,7 +105,7 @@ QPushButton:pressed {
     border-color: #B03A2E;  
 }
 """
-apply_st="""            QPushButton {
+apply_st = """            QPushButton {
                 background-color: rgba(0, 0, 0, 0.2);
                 border: none;
                 border-radius: 8px;
@@ -117,7 +117,7 @@ apply_st="""            QPushButton {
                 background-color: rgba(0, 0, 0, 0.2);
             }"""
 
-back_st="""
+back_st = """
     QPushButton {
         background-color: rgba(0, 0, 0, 0.2);
         border: none;
@@ -131,7 +131,7 @@ back_st="""
     }
 """
 
-selection_st="""    QComboBox {
+selection_st = """    QComboBox {
         background-color: rgba(0, 0, 0, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 6px;
@@ -173,7 +173,7 @@ selection_st="""    QComboBox {
         selection-background-color: rgba(255, 255, 255, 0.2);
         outline: none;
     }"""
-float_st="""QLabel {
+float_st = """QLabel {
     background-color: rgba(0, 0, 0, 0.2);
     border: none;
     border-radius: 8px;

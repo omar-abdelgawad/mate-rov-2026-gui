@@ -10,7 +10,6 @@ import threading
 from PyQt5.QtCore import QObject, pyqtSignal
 
 
-
 class SignalSender(QObject):
     depth_signal = pyqtSignal(float)
     thrusters_signal = pyqtSignal(list)

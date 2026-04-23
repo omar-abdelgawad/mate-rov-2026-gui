@@ -3,9 +3,18 @@ import cv2
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, QThread, Qt, QDateTime
 from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QSizePolicy, QDialog, QApplication
+from PyQt5.QtWidgets import (
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QLabel,
+    QComboBox,
+    QSizePolicy,
+    QDialog,
+    QApplication,
+)
 
-from crab_detection.crab_detector import CrabDetector # from pkg 
+from crab_detection.crab_detector import CrabDetector  # from pkg
 from stylesheet import back_st, selection_st
 from utils import BG_path, scale
 
@@ -66,22 +75,18 @@ class DModelthread(QThread):
             result_h, result_w = result.shape[:2]
 
             if result_w == result_h and orig_w > orig_h:
-                result = cv2.resize(result, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR)
+                result = cv2.resize(
+                    result, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR
+                )
 
             rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
 
-            rgb = rgb.copy()  
+            rgb = rgb.copy()
 
             h, w, ch = rgb.shape
             bytes_per_line = ch * w
 
-            qt_img = QImage(
-                rgb.data,
-                w,
-                h,
-                bytes_per_line,
-                QImage.Format_RGB888
-            ).copy()   
+            qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
 
             self.ImageSignal.emit(qt_img)
 
@@ -89,7 +94,6 @@ class DModelthread(QThread):
 
 
 class CrabDetectionUi(object):
-
     def setupUI(self, Dialog, parent=None, start_thread=False):
         self.parent = parent
         self.Dialog = Dialog
@@ -128,10 +132,7 @@ class CrabDetectionUi(object):
         self.backBtn.setStyleSheet(back_st + " color: white;")
         self.backBtn.setText("Back")
 
-        self.backBtn.setSizePolicy(
-            QSizePolicy.Fixed,
-            QSizePolicy.Fixed
-        )
+        self.backBtn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.backBtn.setMinimumSize(scale(110), scale(40))
 
         top_bar_layout.addWidget(self.backBtn)
@@ -239,7 +240,7 @@ class FreezeDialog(QDialog):
         self.setWindowTitle("Frozen Frame")
         dialog_width = scale(700)
         dialog_height = scale(500)
-        
+
         self.resize(dialog_width, dialog_height)
         self.setMaximumSize(scale(1000), scale(750))
 
@@ -248,19 +249,16 @@ class FreezeDialog(QDialog):
         label = QLabel()
         label.setAlignment(Qt.AlignCenter)
         image = image.convertToFormat(QImage.Format_RGB888)
-        
+
         pixmap = QPixmap.fromImage(image)
-        
+
         target_width = dialog_width - scale(40)
         target_height = dialog_height - scale(40)
-        
+
         scaled_pixmap = pixmap.scaled(
-            target_width, 
-            target_height, 
-            Qt.KeepAspectRatio, 
-            Qt.SmoothTransformation
+            target_width, target_height, Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-        
+
         label.setPixmap(scaled_pixmap)
 
         layout = QVBoxLayout()
@@ -271,5 +269,5 @@ class FreezeDialog(QDialog):
 
         self.move(
             screen.center().x() - self.width() // 2,
-            screen.center().y() - self.height() // 2
+            screen.center().y() - self.height() // 2,
         )

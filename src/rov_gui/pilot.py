@@ -7,6 +7,7 @@ from camera_widgets import CameraGrid
 from utils import BG_path, scale
 from config import PILOT_FEEDS
 
+
 class PilotUi(object):
     def setupUi(self, Dialog):
         # Loading font
@@ -15,7 +16,7 @@ class PilotUi(object):
         id = QFontDatabase.addApplicationFont(font_path)
         if id == -1:
             print("Failed to load font!")
-        
+
         families = QFontDatabase.applicationFontFamilies(id)
         # Scaled font sizes
         font = QFont(families[0], 22)
@@ -36,7 +37,7 @@ class PilotUi(object):
         self.BackButton.setObjectName("Back button")
         self.BackButton.setGeometry(QRect(scale(10), scale(10), scale(61), scale(41)))
         icon = QIcon()
-        icon = QIcon.fromTheme("go-previous")  
+        icon = QIcon.fromTheme("go-previous")
         self.BackButton.setIcon(icon)
         self.BackButton.setStyleSheet(back_st)
         self.BackButton.setFont(Afont)
@@ -48,7 +49,6 @@ class PilotUi(object):
         self.CamButton.setStyleSheet(Engineer_buttons_st)
         self.CamButton.setFont(font)
 
-
         self.camera_grid = None
         self.CamButton.clicked.connect(self.launch_camera_system)
 
@@ -57,7 +57,7 @@ class PilotUi(object):
             self.camera_grid = CameraGrid(PILOT_FEEDS)
             self.camera_grid.setWindowTitle("ROV Camera System")
             self.camera_grid.resize(scale(1280), scale(720))
-        
+
         self.camera_grid.show()
         self.camera_grid.start()
 
@@ -68,4 +68,6 @@ class PilotUi(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Dialog", None))
         self.Bg_label.setText("")
         self.BackButton.setText(QCoreApplication.translate("Dialog", "Back", None))
-        self.CamButton.setText(QCoreApplication.translate("Dialog", "Launch Camera System", None))
+        self.CamButton.setText(
+            QCoreApplication.translate("Dialog", "Launch Camera System", None)
+        )
