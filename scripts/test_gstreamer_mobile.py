@@ -1,6 +1,10 @@
 import cv2
+import sys
 
-url = "rtsp://admin:admin@192.168.1.36:1935"
+ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.36"
+port = sys.argv[2] if len(sys.argv) > 2 else "1935"
+
+url = f"rtsp://admin:admin@{ip}:{port}"
 
 cap = cv2.VideoCapture(url)
 

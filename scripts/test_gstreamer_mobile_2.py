@@ -1,7 +1,11 @@
 import cv2
+import sys
+
+ip = sys.argv[1] if len(sys.argv) > 1 else "192.168.1.36"
+port = sys.argv[2] if len(sys.argv) > 2 else "1935"
 
 gst_pipeline = (
-    "rtspsrc location=rtsp://admin:admin@192.168.1.36:1935 latency=0 ! "
+    f"rtspsrc location=rtsp://admin:admin@{ip}:{port} latency=0 ! "
     "rtph264depay ! decodebin ! videoconvert ! appsink"
 )
 
