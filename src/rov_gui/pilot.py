@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QLabel, QPushButton
 from stylesheet import Engineer_buttons_st, back_st
 import os
 from camera_widgets import CameraGrid
-from utils import BG_path, scale
+from utils import BG_path, ResponsiveBackground, scale
 from config import PILOT_FEEDS
 
 
@@ -28,9 +28,8 @@ class PilotUi(object):
         # Background
         self.Bg_label = QLabel(Dialog)
         self.Bg_label.setObjectName("Background")
-        self.Bg_label.setGeometry(QRect(scale(-3), scale(-5), scale(945), scale(607)))
         self.Bg_label.setPixmap(QPixmap(BG_path))
-        self.Bg_label.setScaledContents(True)
+        self._responsive_bg = ResponsiveBackground(Dialog, self.Bg_label, BG_path)
 
         # Back button
         self.BackButton = QPushButton(Dialog)

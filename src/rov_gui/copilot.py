@@ -20,6 +20,7 @@ from stylesheet import (
     selection_st,
 )
 from utils import reconnect_command, terminal_execute
+from utils import ResponsiveBackground
 
 
 # CAM_PORTS now imported from config
@@ -60,9 +61,8 @@ class CopilotUi(object):
         # background label
         self.BG_label = QLabel(Dialog)
         self.BG_label.setObjectName("Background")
-        self.BG_label.setGeometry(QRect(scale(-3), scale(-5), scale(945), scale(607)))
         self.BG_label.setPixmap(QPixmap(BG_path))
-        self.BG_label.setScaledContents(True)
+        self._responsive_bg = ResponsiveBackground(Dialog, self.BG_label, BG_path)
 
         self.vx_label_design = QLabel(Dialog)
         self.vx_label_design.setObjectName("vx_label_design")

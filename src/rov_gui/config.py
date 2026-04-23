@@ -17,9 +17,7 @@ CAM_PORTS = {
 
 # CLI Override logic
 parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument(
-    "--mobile-rtsp", nargs="+", help="Override RTSP feeds with mobile stream(s)"
-)
+parser.add_argument("--mobile-rtsp", nargs="+", help="Override RTSP feeds with mobile stream(s)")
 args, _ = parser.parse_known_args()
 
 if args.mobile_rtsp:
@@ -34,11 +32,9 @@ if args.mobile_rtsp:
 
 # Pilot page RTSP feed URLs (derived from mapping to avoid duplication)
 PILOT_FEEDS = [
-    CAM_PORTS["Net"][1],  # Top left
-    CAM_PORTS["Side"][1],  # Top right
+    CAM_PORTS["Net"][1],      # Top left
+    CAM_PORTS["Side"][1],     # Top right
     CAM_PORTS["Gripper"][1],  # Bot left
-    CAM_PORTS["Jelly"][1],  # Bot right
-    CAM_PORTS["ZED"][1]
-    if args.mobile_rtsp
-    else f"rtsp://{PILOT_STATION_IP}:8554/videofeed",  # Middle (ZED local preference)
+    CAM_PORTS["Jelly"][1],    # Bot right
+    CAM_PORTS["ZED"][1] if args.mobile_rtsp else f"rtsp://{PILOT_STATION_IP}:8554/videofeed",  # Middle (ZED local preference)
 ]

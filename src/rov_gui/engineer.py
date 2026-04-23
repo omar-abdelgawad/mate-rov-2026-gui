@@ -2,9 +2,8 @@ from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QPushButton
 import os
-import subprocess
 from stylesheet import Engineer_buttons_st, back_st
-from utils import BG_path, scale
+from utils import BG_path, ResponsiveBackground, scale
 
 
 class EngineerUi(object):
@@ -23,9 +22,8 @@ class EngineerUi(object):
 
         self.Bg_label = QLabel(Dialog)
         self.Bg_label.setObjectName("Background label")
-        self.Bg_label.setGeometry(QRect(scale(-3), scale(-5), scale(945), scale(607)))
         self.Bg_label.setPixmap(QPixmap(BG_path))
-        self.Bg_label.setScaledContents(True)
+        self._responsive_bg = ResponsiveBackground(Dialog, self.Bg_label, BG_path)
 
         self.BackButton = QPushButton(Dialog)
         self.BackButton.setObjectName("Back Button")
@@ -42,7 +40,6 @@ class EngineerUi(object):
         )
         self.DepthButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.DepthButton.setFont(font)
-        self.DepthButton.clicked.connect(self.openDepthEstimation)
 
         self.IccButton = QPushButton(Dialog)
         self.IccButton.setObjectName("Crab Detection Button")
@@ -66,7 +63,6 @@ class EngineerUi(object):
         )
         self.EdnaButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.EdnaButton.setFont(font)
-        self.EdnaButton.clicked.connect(self.openEdna)
 
         self.setText(Dialog)
         QMetaObject.connectSlotsByName(Dialog)
@@ -86,21 +82,5 @@ class EngineerUi(object):
         )
         self.EdnaButton.setText(QCoreApplication.translate("Dialog", "eDNA", None))
 
-    def openDepthEstimation(self):
-        # Resolve path relative to the project root
-        base_dir = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        )
-        path = os.path.join(base_dir, "length-measurement", "build")
-        if os.path.exists(path):
-            subprocess.run(
-                "./zed_open_capture_depth_tune_stereo", cwd=path, shell=True, check=True
-            )
-        else:
-            print(f"Error: Path not found {path}")
-
     def openInformationSheet(self):
-        pass
-
-    def openEdna(self):
         pass
