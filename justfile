@@ -17,7 +17,7 @@ test_gui_mobile +rtsp_urls="rtsp://192.168.1.15:8080/h264_ulaw.sdp":
   cd src/rov_gui && python main.py --mobile-rtsp {{rtsp_urls}}
 
 test_gui_cameras ip=default_ip:
-  just test_gui_mobile "rtsp://{{ip}}:5000/unicast" "rtsp://{{ip}}:5002/unicast" "rtsp://{{ip}}:8554/zed"
+  just test_gui_mobile "rtsp://{{ip}}:5000/unicast" "rtsp://{{ip}}:5001/unicast" "rtsp://{{ip}}:8554/zed"
 
 test_one_camera port='5000' ip=default_ip :
   ffplay -rtsp_transport tcp rtsp://{{ip}}:{{port}}/unicast
