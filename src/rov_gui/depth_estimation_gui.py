@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
 
 from stylesheet import back_st, selection_st
 from utils import BG_path, ResponsiveBackground, scale
+from config import CAM_PORTS
 
 OUTPUT_DIR = "depth_output"
 
@@ -119,11 +120,7 @@ class DepthEstimationUi(object):
         top_bar_layout.addWidget(camera_label)
 
         self.cameraCombo = QComboBox()
-        self.cameraCombo.addItem("Z Camera", 0)
-        self.cameraCombo.addItem("CAM1", 1)
-        self.cameraCombo.addItem("CAM2", 2)
-        self.cameraCombo.addItem("CAM3", 3)
-        self.cameraCombo.addItem("CAM4", 4)
+        self.cameraCombo.addItem("ZED Camera", CAM_PORTS["ZED"][1])
         self.cameraCombo.setStyleSheet(selection_st)
         self.cameraCombo.setMaximumWidth(scale(150))
         self.cameraCombo.currentIndexChanged.connect(self.on_camera_changed)
@@ -164,7 +161,7 @@ class DepthEstimationUi(object):
 
         print("Starting depth feed thread")
         self.imageUpdater = ImageUpdater(self)
-        self.thread = VideoFeedThread(camera_idx=0)
+        self.thread = VideoFeedThread(camera_idx=CAM_PORTS["ZED"][1])
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 
