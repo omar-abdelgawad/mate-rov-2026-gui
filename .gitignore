@@ -1,6 +1,7 @@
 # custom
 src/rov_gui/generated/
 src/rov_gui/depth_output/
+src/rov_gui/best_v4_all4.onnx
 # Python-generated files
 __pycache__/
 *.py[oc]

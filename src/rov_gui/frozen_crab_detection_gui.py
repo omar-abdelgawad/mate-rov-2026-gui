@@ -140,35 +140,50 @@ class ImageUpdater(QObject):
 class VideoFeedThread(QThread):
     ImageSignal = pyqtSignal(QImage)
 
-    def __init__(self, camera_idx=0):
+    def __init__(self, stream_url=None):
         super().__init__()
-        self.camera_idx = camera_idx
+        self.stream_url = stream_url
 
-    def set_camera(self, camera_idx):
-        self.camera_idx = camera_idx
+    def set_camera(self, stream_url):
+        self.stream_url = stream_url
 
     def run(self):
-        cap = cv2.VideoCapture(self.camera_idx)
-
-        if not cap.isOpened():
-            print(f"Camera {self.camera_idx} not opened")
-            return
-
+        pipeline = (
+            f"rtspsrc location={self.stream_url} latency=0 timeout=2000000 tcp-timeout=2000000 buffer-mode=auto ! "
+            "decodebin ! videoconvert ! appsink max-buffers=1 drop=True"
+        )
+        
         while not self.isInterruptionRequested():
-            ret, frame = cap.read()
-            if not ret:
+            cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+            
+            if not cap.isOpened():
+                # Emit a placeholder or retry after a delay
+                for _ in range(20): # Sleep in small increments
+                    if self.isInterruptionRequested(): return
+                    self.msleep(100)
                 continue
-
-            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            rgb = rgb.copy()
-
-            h, w, ch = rgb.shape
-            bytes_per_line = ch * w
-            qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
-
-            self.ImageSignal.emit(qt_img)
-
-        cap.release()
+                
+            while not self.isInterruptionRequested() and cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    cap.release()
+                    cv2.destroyAllWindows()
+                    for _ in range(10): # Responsive sleep
+                        if self.isInterruptionRequested(): return
+                        self.msleep(100)
+                    break # Break inner loop to restart capture
+    
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                rgb = rgb.copy()
+    
+                h, w, ch = rgb.shape
+                bytes_per_line = ch * w
+                qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
+    
+                self.ImageSignal.emit(qt_img)
+            
+            if cap.isOpened():
+                cap.release()
 
 
 class FrozenCrabDetectionDialog(QDialog):
@@ -284,7 +299,8 @@ class FrozenCrabDetectionUi(object):
         top_bar_layout.addWidget(camera_label)
 
         self.cameraCombo = QComboBox()
-        self.cameraCombo.addItem("Webcam", 0)
+        for name, port_info in CAM_PORTS.items():
+            self.cameraCombo.addItem(name, port_info[1])
         self.cameraCombo.setStyleSheet(selection_st)
         self.cameraCombo.setMaximumWidth(scale(150))
         self.cameraCombo.currentIndexChanged.connect(self.on_camera_changed)
@@ -324,8 +340,9 @@ class FrozenCrabDetectionUi(object):
             return
 
         print("Starting frozen crab feed thread")
+        initial_url = self.cameraCombo.itemData(0)
         self.imageUpdater = ImageUpdater(self)
-        self.thread = VideoFeedThread(camera_idx=0)
+        self.thread = VideoFeedThread(stream_url=initial_url)
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 
@@ -333,14 +350,14 @@ class FrozenCrabDetectionUi(object):
         if self.thread is None or not self.thread.isRunning():
             return
 
-        camera_idx = self.cameraCombo.itemData(index)
-        print(f"Switching to camera: {camera_idx}")
+        stream_url = self.cameraCombo.itemData(index)
+        print(f"Switching to camera: {stream_url}")
 
         self.thread.requestInterruption()
         self.thread.wait()
 
         self.imageUpdater = ImageUpdater(self)
-        self.thread = VideoFeedThread(camera_idx=camera_idx)
+        self.thread = VideoFeedThread(stream_url=stream_url)
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 

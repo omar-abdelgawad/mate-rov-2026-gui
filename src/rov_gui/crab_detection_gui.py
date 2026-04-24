@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import (
 from crab_detection.crab_detector import CrabDetector  # from pkg
 from stylesheet import back_st, selection_st
 from utils import BG_path, ResponsiveBackground, scale
+from config import CAM_PORTS
 
 OUTPUT_DIR = "output"
 
@@ -136,11 +137,8 @@ class CrabDetectionUi(object):
         top_bar_layout.addWidget(camera_label)
 
         self.cameraCombo = QComboBox()
-        self.cameraCombo.addItem("Z Camera", 0)
-        self.cameraCombo.addItem("CAM1", 1)
-        self.cameraCombo.addItem("CAM2", 2)
-        self.cameraCombo.addItem("CAM3", 3)
-        self.cameraCombo.addItem("CAM4", 4)
+        for name, port_info in CAM_PORTS.items():
+            self.cameraCombo.addItem(name, port_info[1])
         self.cameraCombo.setStyleSheet(selection_st)
         self.cameraCombo.setMaximumWidth(scale(150))
         self.cameraCombo.currentIndexChanged.connect(self.on_camera_changed)
@@ -185,7 +183,8 @@ class CrabDetectionUi(object):
 
         print("Starting crab detection thread")
         self.imageUpdater = ImageUpdater(self)
-        self.thread = DModelthread(camera_idx=0)
+        initial_url = self.cameraCombo.itemData(0)
+        self.thread = DModelthread(camera_idx=initial_url)
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 

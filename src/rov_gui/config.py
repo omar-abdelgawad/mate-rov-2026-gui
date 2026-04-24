@@ -1,7 +1,7 @@
 import argparse
 
 # Network
-RASPBERRY_PI_IP = "192.168.1.57"
+RASPBERRY_PI_IP = "192.168.0.101"
 SSH_USERNAME = "pi"
 SSH_PASSWORD = "pi"
 
