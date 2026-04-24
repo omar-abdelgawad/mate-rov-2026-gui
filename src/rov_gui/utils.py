@@ -176,3 +176,52 @@ def get_scaled_factor():
 
 def scale(x):
     return int(1.35 * x * get_scaled_factor())
+
+
+class ResponsiveBackground:
+    """
+    Keeps a QLabel background image filling the whole dialog (cover behavior),
+    updating on resize/show.
+    """
+
+    def __init__(self, dialog, label, image_path: str):
+        from PyQt5.QtCore import QEvent, QObject, Qt
+        from PyQt5.QtGui import QPixmap
+
+        self._dialog = dialog
+        self._label = label
+        self._pixmap = QPixmap(image_path)
+        self._QEvent = QEvent
+        self._Qt = Qt
+
+        self._label.setScaledContents(False)
+        self._label.setAlignment(Qt.AlignCenter)
+        self._label.lower()
+
+        self._filter = QObject()
+        self._filter.eventFilter = self._event_filter  # type: ignore[attr-defined]
+        self._dialog.installEventFilter(self._filter)
+        self.update()
+
+    def _event_filter(self, obj, event):
+        if obj is self._dialog and event.type() in (
+            self._QEvent.Resize,
+            self._QEvent.Show,
+        ):
+            self.update()
+        return False
+
+    def update(self):
+        if self._pixmap.isNull():
+            return
+
+        self._label.setGeometry(self._dialog.rect())
+
+        size = self._label.size()
+        if size.width() <= 0 or size.height() <= 0:
+            return
+
+        scaled = self._pixmap.scaled(
+            size, self._Qt.KeepAspectRatioByExpanding, self._Qt.SmoothTransformation
+        )
+        self._label.setPixmap(scaled)

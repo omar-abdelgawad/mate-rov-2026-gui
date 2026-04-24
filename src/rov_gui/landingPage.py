@@ -3,7 +3,15 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QLabel, QPushButton
 
 from stylesheet import Laning_buttons_st
-from utils import BG_path, copilot_path, pilot_path, engineer_path, float_path, scale
+from utils import (
+    BG_path,
+    ResponsiveBackground,
+    copilot_path,
+    pilot_path,
+    engineer_path,
+    float_path,
+    scale,
+)
 
 
 class LandingPageUi(object):
@@ -14,9 +22,8 @@ class LandingPageUi(object):
         # Background
         self.Bg_label = QLabel(Dialog)
         self.Bg_label.setObjectName("BG label")
-        self.Bg_label.setGeometry(QRect(scale(-3), scale(-5), scale(945), scale(607)))
         self.Bg_label.setPixmap(QPixmap(BG_path))
-        self.Bg_label.setScaledContents(True)
+        self._responsive_bg = ResponsiveBackground(Dialog, self.Bg_label, BG_path)
 
         # Pilot button
         self.PilotButton = QPushButton(Dialog)

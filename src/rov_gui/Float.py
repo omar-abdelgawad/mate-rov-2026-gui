@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import QLabel, QPushButton, QFrame
 from stylesheet import Copilot_st1, Copilot_st2, float_st, back_st
 import os
-from utils import BG_path, scale
+from utils import BG_path, ResponsiveBackground, scale
 
 
 class FloatUi(object):
@@ -26,9 +26,8 @@ class FloatUi(object):
         # Background
         self.Bg_label = QLabel(Dialog)
         self.Bg_label.setObjectName("BG label")
-        self.Bg_label.setGeometry(QRect(scale(-3), scale(-5), scale(945), scale(607)))
         self.Bg_label.setPixmap(QPixmap(BG_path))
-        self.Bg_label.setScaledContents(True)
+        self._responsive_bg = ResponsiveBackground(Dialog, self.Bg_label, BG_path)
 
         self.Dlabel = QLabel(Dialog)
         self.Dlabel.setObjectName("Design label")

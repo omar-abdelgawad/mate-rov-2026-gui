@@ -7,6 +7,8 @@ from copilot import CopilotUi
 from engineer import EngineerUi
 from Float import FloatUi
 from crab_detection_gui import CrabDetectionUi
+from depth_estimation_gui import DepthEstimationUi
+from edna_gui import EdnaUi
 from utils import VideoCaptureThread, scale, ROSInterface
 from info_sheet_input import infoSheetInputUi
 from config import RASPBERRY_PI_IP, SSH_USERNAME, SSH_PASSWORD
@@ -26,6 +28,8 @@ class MainWindow(QMainWindow):
         self.engineer_page = QDialog()
         self.float_page = QDialog()
         self.crab_detection_page = QDialog()
+        self.depth_estimation_page = QDialog()
+        self.edna_page = QDialog()
         self.infoSheetInput_page = (
             QDialog()
         )  # ---------------------------------------------------------------
@@ -53,6 +57,14 @@ class MainWindow(QMainWindow):
         self.crab_detection_ui = CrabDetectionUi()
         self.crab_detection_ui.setupUI(self.crab_detection_page, start_thread=False)
 
+        self.depth_estimation_ui = DepthEstimationUi()
+        self.depth_estimation_ui.setupUI(
+            self.depth_estimation_page, start_thread=False
+        )
+
+        self.edna_ui = EdnaUi()
+        self.edna_ui.setupUI(self.edna_page)
+
         self.infoSheetInput_ui = (
             infoSheetInputUi()
         )  # ---------------------------------------------------------------
@@ -65,6 +77,8 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.engineer_page)
         self.stacked_widget.addWidget(self.float_page)
         self.stacked_widget.addWidget(self.crab_detection_page)
+        self.stacked_widget.addWidget(self.depth_estimation_page)
+        self.stacked_widget.addWidget(self.edna_page)
         self.stacked_widget.addWidget(
             self.infoSheetInput_page
         )  # ---------------------------------------------------------------
@@ -81,11 +95,17 @@ class MainWindow(QMainWindow):
         self.co_pilot_ui.back_button.clicked.connect(self.show_landing_page)
         self.engineer_ui.BackButton.clicked.connect(self.show_landing_page)
         self.engineer_ui.IccButton.clicked.connect(self.show_crab_detection_page)
+        self.engineer_ui.DepthButton.clicked.connect(self.show_depth_estimation_page)
+        self.engineer_ui.EdnaButton.clicked.connect(self.show_edna_page)
         self.engineer_ui.InformationButton.clicked.connect(
             self.infoSheet_take_inputs_page
         )  # ---------------------------------------------------------------
         self.float_ui.back_button.clicked.connect(self.show_landing_page)
         self.crab_detection_ui.backBtn.clicked.connect(self.back_from_crab_detection)
+        self.depth_estimation_ui.backBtn.clicked.connect(
+            self.back_from_depth_estimation
+        )
+        self.edna_ui.backBtn.clicked.connect(self.back_from_edna)
         self.infoSheetInput_ui.backBtn.clicked.connect(
             self.show_engineer_page
         )  # ---------------------------------------------------------------
@@ -120,6 +140,15 @@ class MainWindow(QMainWindow):
         self.crab_detection_ui.start_thread()
         self.stacked_widget.setCurrentWidget(self.crab_detection_page)
 
+    def show_depth_estimation_page(self):
+        """Show depth estimation page and start the thread"""
+        self.depth_estimation_ui.start_thread()
+        self.stacked_widget.setCurrentWidget(self.depth_estimation_page)
+
+    def show_edna_page(self):
+        """Show eDNA page"""
+        self.stacked_widget.setCurrentWidget(self.edna_page)
+
     def infoSheet_take_inputs_page(
         self,
     ):  # ---------------------------------------------------------------
@@ -128,6 +157,15 @@ class MainWindow(QMainWindow):
     def back_from_crab_detection(self):
         """Stop the crab detection thread and go back"""
         self.crab_detection_ui.stop()
+        self.show_engineer_page()
+
+    def back_from_depth_estimation(self):
+        """Stop the depth estimation thread and go back"""
+        self.depth_estimation_ui.stop()
+        self.show_engineer_page()
+
+    def back_from_edna(self):
+        """Go back from eDNA page"""
         self.show_engineer_page()
 
     def _connect_ros_signals(self):

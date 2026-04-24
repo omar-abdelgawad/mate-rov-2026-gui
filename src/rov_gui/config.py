@@ -14,9 +14,7 @@ CAM_PORTS = {
 
 # CLI Override logic
 parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument(
-    "--mobile-rtsp", nargs="+", help="Override RTSP feeds with mobile stream(s)"
-)
+parser.add_argument("--mobile-rtsp", nargs="+", help="Override RTSP feeds with mobile stream(s)")
 args, _ = parser.parse_known_args()
 
 if args.mobile_rtsp:

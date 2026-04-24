@@ -14,11 +14,10 @@ from PyQt5.QtWidgets import (
     QApplication,
 )
 
-from crab_detection.crab_detector import CrabDetector  # from pkg
 from stylesheet import back_st, selection_st
 from utils import BG_path, ResponsiveBackground, scale
 
-OUTPUT_DIR = "output"
+OUTPUT_DIR = "depth_output"
 
 
 class ImageUpdater(QObject):
@@ -46,13 +45,12 @@ class ImageUpdater(QObject):
         self.ui.label.setPixmap(QPixmap.fromImage(scaledImg))
 
 
-class DModelthread(QThread):
+class VideoFeedThread(QThread):
     ImageSignal = pyqtSignal(QImage)
 
     def __init__(self, camera_idx=0):
         super().__init__()
         self.camera_idx = camera_idx
-        self.DetectionModel = CrabDetector(OUTPUT_DIR)
 
     def set_camera(self, camera_idx):
         self.camera_idx = camera_idx
@@ -69,23 +67,11 @@ class DModelthread(QThread):
             if not ret:
                 continue
 
-            result, _ = self.DetectionModel.detect(frame)
-
-            orig_h, orig_w = frame.shape[:2]
-            result_h, result_w = result.shape[:2]
-
-            if result_w == result_h and orig_w > orig_h:
-                result = cv2.resize(
-                    result, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR
-                )
-
-            rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             rgb = rgb.copy()
 
             h, w, ch = rgb.shape
             bytes_per_line = ch * w
-
             qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
 
             self.ImageSignal.emit(qt_img)
@@ -93,7 +79,7 @@ class DModelthread(QThread):
         cap.release()
 
 
-class CrabDetectionUi(object):
+class DepthEstimationUi(object):
     def setupUI(self, Dialog, parent=None, start_thread=False):
         self.parent = parent
         self.Dialog = Dialog
@@ -102,13 +88,13 @@ class CrabDetectionUi(object):
         self.imageUpdater = None
         self.start_on_init = start_thread
 
-        Dialog.setObjectName("CrabDetectionDialog")
+        Dialog.setObjectName("DepthEstimationDialog")
         Dialog.resize(scale(928), scale(596))
         Dialog.setMinimumSize(scale(800), scale(500))
         Dialog.setMaximumSize(scale(1200), scale(800))
 
         self._bg_label = QLabel(Dialog)
-        self._bg_label.setObjectName("CrabDetectionBackground")
+        self._bg_label.setObjectName("DepthEstimationBackground")
         self._responsive_bg = ResponsiveBackground(Dialog, self._bg_label, BG_path)
 
         root_layout = QVBoxLayout(Dialog)
@@ -122,13 +108,10 @@ class CrabDetectionUi(object):
 
         icon = QIcon.fromTheme("go-previous")
         self.backBtn.setIcon(icon)
-
         self.backBtn.setStyleSheet(back_st + " color: white;")
         self.backBtn.setText("Back")
-
         self.backBtn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.backBtn.setMinimumSize(scale(110), scale(40))
-
         top_bar_layout.addWidget(self.backBtn)
 
         camera_label = QLabel("Camera:")
@@ -147,7 +130,6 @@ class CrabDetectionUi(object):
         top_bar_layout.addWidget(self.cameraCombo)
 
         top_bar_layout.addStretch(1)
-
         root_layout.addLayout(top_bar_layout, stretch=0)
 
         self.label = QLabel()
@@ -156,21 +138,18 @@ class CrabDetectionUi(object):
         self.label.setStyleSheet("background: rgba(0,0,0,0);")
         self.label.setMinimumHeight(scale(280))
         self.label.setMinimumWidth(scale(500))
-
         root_layout.addWidget(self.label, stretch=1)
 
         bottom_bar_layout = QHBoxLayout()
-
         bottom_bar_layout.addStretch(1)
 
         self.freezeAndSaveBtn = QPushButton("Freeze And Save")
         self.freezeAndSaveBtn.setMinimumHeight(scale(50))
         self.freezeAndSaveBtn.setMinimumWidth(scale(150))
         self.freezeAndSaveBtn.clicked.connect(self.display_save_frame)
-
         bottom_bar_layout.addWidget(self.freezeAndSaveBtn)
-        bottom_bar_layout.addStretch(1)
 
+        bottom_bar_layout.addStretch(1)
         root_layout.addLayout(bottom_bar_layout, stretch=0)
 
         Dialog.setLayout(root_layout)
@@ -183,9 +162,9 @@ class CrabDetectionUi(object):
             print("Thread already running")
             return
 
-        print("Starting crab detection thread")
+        print("Starting depth feed thread")
         self.imageUpdater = ImageUpdater(self)
-        self.thread = DModelthread(camera_idx=0)
+        self.thread = VideoFeedThread(camera_idx=0)
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 
@@ -200,13 +179,13 @@ class CrabDetectionUi(object):
         self.thread.wait()
 
         self.imageUpdater = ImageUpdater(self)
-        self.thread = DModelthread(camera_idx=camera_idx)
+        self.thread = VideoFeedThread(camera_idx=camera_idx)
         self.thread.ImageSignal.connect(self.imageUpdater.handleImage)
         self.thread.start()
 
     def stop(self):
         if self.thread is not None and self.thread.isRunning():
-            print("Stopping crab detection thread")
+            print("Stopping depth feed thread")
             self.thread.requestInterruption()
             self.thread.wait()
             self.thread = None
@@ -243,7 +222,6 @@ class FreezeDialog(QDialog):
         label = QLabel()
         label.setAlignment(Qt.AlignCenter)
         image = image.convertToFormat(QImage.Format_RGB888)
-
         pixmap = QPixmap.fromImage(image)
 
         target_width = dialog_width - scale(40)
@@ -252,13 +230,11 @@ class FreezeDialog(QDialog):
         scaled_pixmap = pixmap.scaled(
             target_width, target_height, Qt.KeepAspectRatio, Qt.SmoothTransformation
         )
-
         label.setPixmap(scaled_pixmap)
 
         layout = QVBoxLayout()
         layout.setContentsMargins(scale(10), scale(10), scale(10), scale(10))
         layout.addWidget(label, alignment=Qt.AlignCenter)
-
         self.setLayout(layout)
 
         self.move(

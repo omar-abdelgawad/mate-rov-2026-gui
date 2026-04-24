@@ -34,7 +34,6 @@ class CameraFeed(QThread):
 
             while self.running and cap.isOpened():
                 ret, frame = cap.read()
-
                 if not ret:
                     cap.release()
                     cv2.destroyAllWindows()
