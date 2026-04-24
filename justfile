@@ -1,4 +1,5 @@
 # note that you always have to source your environment before running any command 
+default_ip := "192.168.0.57" # we set this manually as a static ip on the pi
 # lists recipes
 default:
   just --list
@@ -15,11 +16,14 @@ test_mobile_rtsp_2 ip="" port="":
 test_gui_mobile +rtsp_urls="rtsp://192.168.1.15:8080/h264_ulaw.sdp":
   cd src/rov_gui && python main.py --mobile-rtsp {{rtsp_urls}}
 
-test_gui_cameras:
-  just test_gui_mobile "rtsp://192.168.0.100:5000/unicast" "rtsp://192.168.0.100:5001/unicast" "rtsp://192.168.0.100:5002/unicast" "rtsp://192.168.0.100:5003/unicast" "rtsp://192.168.0.100:5004/unicast"
+test_gui_cameras ip=default_ip:
+  just test_gui_mobile "rtsp://{{ip}}:5000/unicast" "rtsp://{{ip}}:5001/unicast" "rtsp://{{ip}}:8554/zed"
 
-test_one_camera port='5000':
-  ffplay -rtsp_transport tcp rtsp://192.168.0.100:{{port}}/unicast
+test_one_camera port='5000' ip=default_ip :
+  ffplay -rtsp_transport tcp rtsp://{{ip}}:{{port}}/unicast
+test_zed_camera ip=default_ip port='8554':
+  ffplay -rtsp_transport tcp rtsp://{{ip}}:{{port}}/zed
+  
 fmt:
   uvx ruff format src
 
