@@ -57,27 +57,40 @@ class VideoFeedThread(QThread):
         self.camera_idx = camera_idx
 
     def run(self):
-        cap = cv2.VideoCapture(self.camera_idx)
-
-        if not cap.isOpened():
-            print(f"Camera {self.camera_idx} not opened")
-            return
-
+        pipeline = (
+            f"rtspsrc location={self.camera_idx} latency=0 timeout=2000000 tcp-timeout=2000000 buffer-mode=auto ! "
+            "decodebin ! videoconvert ! appsink max-buffers=1 drop=True"
+        )
+        
         while not self.isInterruptionRequested():
-            ret, frame = cap.read()
-            if not ret:
+            cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+            
+            if not cap.isOpened():
+                for _ in range(20):
+                    if self.isInterruptionRequested(): return
+                    self.msleep(100)
                 continue
+                
+            while not self.isInterruptionRequested() and cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    cap.release()
+                    for _ in range(10):
+                        if self.isInterruptionRequested(): return
+                        self.msleep(100)
+                    break
 
-            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            rgb = rgb.copy()
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                rgb = rgb.copy()
 
-            h, w, ch = rgb.shape
-            bytes_per_line = ch * w
-            qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
+                h, w, ch = rgb.shape
+                bytes_per_line = ch * w
+                qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
 
-            self.ImageSignal.emit(qt_img)
+                self.ImageSignal.emit(qt_img)
 
-        cap.release()
+            if cap.isOpened():
+                cap.release()
 
 
 class DepthEstimationUi(object):

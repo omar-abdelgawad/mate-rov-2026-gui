@@ -1,5 +1,5 @@
 # note that you always have to source your environment before running any command 
-default_ip := "192.168.0.57" # we set this manually as a static ip on the pi
+default_ip := "192.168.0.101" # we set this manually as a static ip on the pi
 # lists recipes
 default:
   just --list

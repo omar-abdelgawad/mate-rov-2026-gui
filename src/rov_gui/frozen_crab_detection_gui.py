@@ -247,14 +247,21 @@ class FrozenCrabDetectionDialog(QDialog):
         # Run detection
         result_img, count = self.detector.detect(cv_img)
 
-        # Convert back to QImage
+        # Save result
+        timestamp = QDateTime.currentDateTime().toString("yyyyMMdd_hhmmss")
+        filename = f"frozen_detection_{timestamp}.png"
+        save_path = os.path.join(self.detector.OUTPUT_DIR, filename)
+        cv2.imwrite(save_path, result_img)
+        print(f"Saved detection to: {save_path}")
+
+        # Convert back to QImage for display
         rgb = cv2.cvtColor(result_img, cv2.COLOR_BGR2RGB)
         h, w, ch = rgb.shape
         bytes_per_line = ch * w
         res_qimg = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
 
         self.update_image_display(res_qimg)
-        self.detect_btn.setText(f"Detected: {count} Total")
+        self.detect_btn.setText(f"Detected: {count} Total (Saved)")
         self.detect_btn.setEnabled(False) # Disable after detection
 
 

@@ -59,39 +59,52 @@ class DModelthread(QThread):
         self.camera_idx = camera_idx
 
     def run(self):
-        cap = cv2.VideoCapture(self.camera_idx)
-
-        if not cap.isOpened():
-            print(f"Camera {self.camera_idx} not opened")
-            return
-
+        pipeline = (
+            f"rtspsrc location={self.camera_idx} latency=0 timeout=2000000 tcp-timeout=2000000 buffer-mode=auto ! "
+            "decodebin ! videoconvert ! appsink max-buffers=1 drop=True"
+        )
+        
         while not self.isInterruptionRequested():
-            ret, frame = cap.read()
-            if not ret:
+            cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+            
+            if not cap.isOpened():
+                for _ in range(20):
+                    if self.isInterruptionRequested(): return
+                    self.msleep(100)
                 continue
+                
+            while not self.isInterruptionRequested() and cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    cap.release()
+                    for _ in range(10):
+                        if self.isInterruptionRequested(): return
+                        self.msleep(100)
+                    break
 
-            result, _ = self.DetectionModel.detect(frame)
+                result, _ = self.DetectionModel.detect(frame)
 
-            orig_h, orig_w = frame.shape[:2]
-            result_h, result_w = result.shape[:2]
+                orig_h, orig_w = frame.shape[:2]
+                result_h, result_w = result.shape[:2]
 
-            if result_w == result_h and orig_w > orig_h:
-                result = cv2.resize(
-                    result, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR
-                )
+                if result_w == result_h and orig_w > orig_h:
+                    result = cv2.resize(
+                        result, (orig_w, orig_h), interpolation=cv2.INTER_LINEAR
+                    )
 
-            rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+                rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
 
-            rgb = rgb.copy()
+                rgb = rgb.copy()
 
-            h, w, ch = rgb.shape
-            bytes_per_line = ch * w
+                h, w, ch = rgb.shape
+                bytes_per_line = ch * w
 
-            qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
+                qt_img = QImage(rgb.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
 
-            self.ImageSignal.emit(qt_img)
+                self.ImageSignal.emit(qt_img)
 
-        cap.release()
+            if cap.isOpened():
+                cap.release()
 
 
 class CrabDetectionUi(object):
