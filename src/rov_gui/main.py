@@ -7,6 +7,7 @@ from copilot import CopilotUi
 from engineer import EngineerUi
 from Float import FloatUi
 from crab_detection_gui import CrabDetectionUi
+from frozen_crab_detection_gui import FrozenCrabDetectionUi
 from depth_estimation_gui import DepthEstimationUi
 from edna_gui import EdnaUi
 from utils import VideoCaptureThread, scale, ROSInterface
@@ -28,6 +29,7 @@ class MainWindow(QMainWindow):
         self.engineer_page = QDialog()
         self.float_page = QDialog()
         self.crab_detection_page = QDialog()
+        self.frozen_crab_detection_page = QDialog()
         self.depth_estimation_page = QDialog()
         self.edna_page = QDialog()
         self.infoSheetInput_page = (
@@ -55,7 +57,11 @@ class MainWindow(QMainWindow):
         self.engineer_ui.setupUi(self.engineer_page)
 
         self.crab_detection_ui = CrabDetectionUi()
+        self.crab_detection_ui = CrabDetectionUi()
         self.crab_detection_ui.setupUI(self.crab_detection_page, start_thread=False)
+
+        self.frozen_crab_detection_ui = FrozenCrabDetectionUi()
+        self.frozen_crab_detection_ui.setupUI(self.frozen_crab_detection_page, start_thread=False)
 
         self.depth_estimation_ui = DepthEstimationUi()
         self.depth_estimation_ui.setupUI(
@@ -77,6 +83,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.engineer_page)
         self.stacked_widget.addWidget(self.float_page)
         self.stacked_widget.addWidget(self.crab_detection_page)
+        self.stacked_widget.addWidget(self.frozen_crab_detection_page)
         self.stacked_widget.addWidget(self.depth_estimation_page)
         self.stacked_widget.addWidget(self.edna_page)
         self.stacked_widget.addWidget(
@@ -95,12 +102,14 @@ class MainWindow(QMainWindow):
         self.co_pilot_ui.back_button.clicked.connect(self.show_landing_page)
         self.engineer_ui.BackButton.clicked.connect(self.show_landing_page)
         self.engineer_ui.IccButton.clicked.connect(self.show_crab_detection_page)
+        self.engineer_ui.FrozenCrabButton.clicked.connect(self.show_frozen_crab_detection_page)
         self.engineer_ui.DepthButton.clicked.connect(self.show_depth_estimation_page)
         self.engineer_ui.EdnaButton.clicked.connect(self.show_edna_page)
         self.engineer_ui.InformationButton.clicked.connect(
             self.infoSheet_take_inputs_page
         )  # ---------------------------------------------------------------
         self.float_ui.back_button.clicked.connect(self.show_landing_page)
+        self.frozen_crab_detection_ui.backBtn.clicked.connect(self.back_from_frozen_crab_detection)
         self.crab_detection_ui.backBtn.clicked.connect(self.back_from_crab_detection)
         self.depth_estimation_ui.backBtn.clicked.connect(
             self.back_from_depth_estimation
@@ -140,6 +149,11 @@ class MainWindow(QMainWindow):
         self.crab_detection_ui.start_thread()
         self.stacked_widget.setCurrentWidget(self.crab_detection_page)
 
+    def show_frozen_crab_detection_page(self):
+        """Show frozen crab detection page and start the thread"""
+        self.frozen_crab_detection_ui.start_thread()
+        self.stacked_widget.setCurrentWidget(self.frozen_crab_detection_page)
+
     def show_depth_estimation_page(self):
         """Show depth estimation page and start the thread"""
         self.depth_estimation_ui.start_thread()
@@ -157,6 +171,11 @@ class MainWindow(QMainWindow):
     def back_from_crab_detection(self):
         """Stop the crab detection thread and go back"""
         self.crab_detection_ui.stop()
+        self.show_engineer_page()
+
+    def back_from_frozen_crab_detection(self):
+        """Stop the frozen crab detection thread and go back"""
+        self.frozen_crab_detection_ui.stop()
         self.show_engineer_page()
 
     def back_from_depth_estimation(self):

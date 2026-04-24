@@ -64,6 +64,14 @@ class EngineerUi(object):
         self.EdnaButton.setStyleSheet(Engineer_buttons_st + " color: white;")
         self.EdnaButton.setFont(font)
 
+        self.FrozenCrabButton = QPushButton(Dialog)
+        self.FrozenCrabButton.setObjectName("Frozen Crab Detection Button")
+        self.FrozenCrabButton.setGeometry(
+            QRect(scale(290), scale(460), scale(351), scale(81))
+        )
+        self.FrozenCrabButton.setStyleSheet(Engineer_buttons_st + " color: white;")
+        self.FrozenCrabButton.setFont(font)
+
         self.setText(Dialog)
         QMetaObject.connectSlotsByName(Dialog)
 
@@ -81,6 +89,7 @@ class EngineerUi(object):
             QCoreApplication.translate("Dialog", "Information Sheet", None)
         )
         self.EdnaButton.setText(QCoreApplication.translate("Dialog", "eDNA", None))
+        self.FrozenCrabButton.setText(QCoreApplication.translate("Dialog", "Frozen Crab Det.", None))
 
     def openInformationSheet(self):
         pass
